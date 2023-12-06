@@ -2,6 +2,8 @@ console.log("sketch.js")
 
 let i;
 let text0;
+let col;
+col = c1;
 text0 = "0"
 function setup() {
   createCanvas(windowWidth,windowHeight);
@@ -11,8 +13,26 @@ function setup() {
 
 function draw() {
   background(220);
-  rect(i,0,50,50)
-  text(text0,100,100)
+  for(let i = 0;i < 8; i++){
+    if(col == c2){
+      col = c1
+    }else{
+      col = c2
+    }
+    for(let j = 0;j < 8; j++){
+      fill(...col)
+      rect(squareSize *i, squareSize *j, squareSize, squareSize);
+      if(col == c2){
+        col = c1
+      }else{
+        col = c2
+      }
+    }
+  }
+
+
+
+  
 }
 
 
