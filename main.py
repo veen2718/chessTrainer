@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, render_template
 import chess
 from math import floor
+import os
 
 board = chess.Board()
 legalMovesSquares = []
@@ -12,9 +13,9 @@ def getLegalMoves(pos):
     piecePos = chess.parse_square(pos)
     allMoves = board.generate_legal_moves()
     pieceMoves = [move for move in allMoves if move.from_square == piecePos]
-    readableMoves = [board.san(move) for move in pieceMoves]
-    print(readableMoves)
-    print(pieceMoves)
+    readableMoves = [[chess.square_name(move.from_square), chess.square_name(move.to_square)] for move in pieceMoves]
+    print(readableMoves,'readable moves')
+    print(pieceMoves,'piece moves')
     return readableMoves
 
 def getBoardAsArray(board=board):
@@ -36,17 +37,23 @@ def getBoardAsArray(board=board):
         boardArray.append(row)
     return boardArray
 
-def getCoords(moveStr):
-    move = board.parse_san(moveStr)
-    coord = chess.square_name(move.to_square)
-    xNames = ["a", "b", "c", "d", "e", "f","g","h"]
-    x = coord[0]
-    x = xNames.index(x) * squareSize + squareSize/2
-    y = coord[1]
-    y = (8-int(y)) * squareSize + squareSize/2
-    print([x,y])
-    return [x,y]
-
+def getCoords(moveList):
+    moveStr = moveList[1]
+    startSquare = moveList[0]
+    print("movestr",moveStr)
+    try:
+        move = board.parse_san(startSquare + moveStr)
+        coord = chess.square_name(move.to_square)
+        xNames = ["a", "b", "c", "d", "e", "f","g","h"]
+        x = coord[0]
+        x = xNames.index(x) * squareSize + squareSize/2
+        y = coord[1]
+        y = (8-int(y)) * squareSize + squareSize/2
+        print([x,y])
+        return [x,y]
+    except Exception as e:
+        print(str(board))
+        print(e)
 
 
 
@@ -81,6 +88,7 @@ def setup():
 
 @app.route('/click_at', methods=['POST'])
 def click_at():
+    print("\n")
     global legalMoves
     global legalMovesSquares
     global selectedPiece
@@ -95,22 +103,35 @@ def click_at():
     xNames = ["a", "b", "c", "d", "e", "f","g","h"]
     
     square = xNames[x] + str(y + 1)
-
+    move = None
+    if selectedPiece:
+        move = selectedPiece + square
     if(x < 8 and y < 8):
         print(f"click at {xNames[x]}{y+1}")
-    if not legalMovesSquares or square not in legalMovesSquares:# If legalmoves is empty => there is no square selected, if square is not in legalMoves => different square selected
+    if not legalMovesSquares or (square not in legalMovesSquares and move not in legalMovesSquares):# If legalmoves is empty => there is no square selected, if square is not in legalMoves => different square selected
+        print(legalMovesSquares,"legalmovessquares",square)
         legalMovesSquares = getLegalMoves(square)
-        legalMoves2 = [getCoords(square) for square in legalMovesSquares]
+        print(legalMovesSquares,"legalmovessquares")
+        print(f"about to getCoords, legalMovesSquares:{legalMovesSquares}")
+        legalMoves2 = [getCoords(square1) for square1 in legalMovesSquares]
+        legalMovesSquares = [f"{x[0]}{x[1]}" for x in legalMovesSquares]
+        print(legalMovesSquares,"legalmovessquares")
         selectedPiece = square
         print(f'selected piece at {selectedPiece}')
         return jsonify(legalMoves2,getBoardAsArray())
         
-    elif square in legalMovesSquares:
+    elif square in legalMovesSquares or move in legalMovesSquares:
+        os.system('clear')
+        print("square in legal moves")
         uci_move = selectedPiece + square
         move = chess.Move.from_uci(uci_move)
+        #print(move)
         board.push(move)
         print(f'moved from {selectedPiece} to {square}')
+        legalMovesSquares = []
         return jsonify([], getBoardAsArray()) 
+    else:
+        print("something went wrong")
 
 
 
