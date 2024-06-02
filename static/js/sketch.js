@@ -84,6 +84,7 @@ function draw() {
         if(piece != null){
           //console.log(piece,"piece")
           image(images[piece.id], piece.x,piece.y, squareSize, squareSize)
+          //console.log(piece.id,piece.x,piece.y,squareSize, squareSize)
         }else{
           //console.log(piece,"piece is null")
         }
