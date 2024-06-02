@@ -2,12 +2,28 @@ from flask import Flask, jsonify, request, render_template
 import chess
 from math import floor
 import os
+import webbrowser
+from threading import Timer
+
+
 
 board = chess.Board()
 legalMovesSquares = []
 legalMoves = []
 selectedPiece = None
-squareSize = 1
+squareSize = 1 
+opened = False
+
+def open_browser(link='http://127.0.0.1:5000/'):
+    global opened
+    if not opened:
+        #print(opened)
+        opened = True
+        webbrowser.open_new_tab(f'{link}')
+        #webbrowser.open_new(f'{link}')
+        print("Browser opened.",opened)
+        
+
 
 def getLegalMoves(pos):
     piecePos = chess.parse_square(pos)
@@ -69,9 +85,21 @@ def parseMove(move_str,board=board):
 app = Flask(__name__)
 
 
+
+
+
 @app.route('/')
 def index():
+    global host
+    print('starting...')
+    host = request.host
     return render_template('index.html')
+
+
+    
+
+
+
 
 
 @app.route('/getBoard')
@@ -84,6 +112,8 @@ def setup():
     global squareSize
     squareSize = data[0]
     print(f"Squaresize: {squareSize}")
+    print('setup finished')
+    
     return '', 204
 
 @app.route('/click_at', methods=['POST'])
@@ -136,4 +166,5 @@ def click_at():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    Timer(0.5, open_browser).start()
+    app.run(debug=False)
