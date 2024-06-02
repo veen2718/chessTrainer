@@ -1,9 +1,9 @@
 import chess
-
+from node import *
 
 class Config:
     def __init__(self):
-        self.setupMoves = [['e2', 'e4'], ['c7', 'c5'],["g1","f3"],['g7','g6']]
+        self.setupMoves = [["e2", "e4"], ["c7", "c5"],["g1","f3"],["g7","g6"]]
         self.mode = 'write'
 
 

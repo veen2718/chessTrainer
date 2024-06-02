@@ -1,5 +1,7 @@
 {
-    "Sicilian Defense":{
-        "setup":[["e2","e4"],["c7","c5"],["b1","c3"]]
+    "Sicilian Defense: Hyperaccelerated Dragon":{
+        "setup":[["e2", "e4"], ["c7", "c5"],["g1","f3"],["g7","g6"]],
+        "data":[]
+
     }
 }
