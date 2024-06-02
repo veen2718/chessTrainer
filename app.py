@@ -58,9 +58,24 @@ def setupMoves():
 
 @app.route('/shutdown',methods=['POST'])
 def shutdown():
-
-    print(cf.history)
+    cf.histories.append(cf.history)
+    print(cf.histories)
     os._exit(0)
+
+
+@app.route('/back')
+def back():
+    cf.histories.append(cf.history)
+    cf.history.pop()
+    cf.board = chess.Board()
+    for move in cf.history:
+        cf.board.push(chess.Move.from_uci(move[0]+move[1]))
+    print('moved back 1')
+    x = getBoardAsArray()
+    for i in x:
+        print(i)
+    print(cf.board)
+    return jsonify(getBoardAsArray(cf.board))
 
 
 @app.route('/click_at', methods=['POST'])

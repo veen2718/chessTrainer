@@ -15,6 +15,7 @@ class Config:
         self.squareSize = 1 
         self.opened = False
         self.history = []
+        self.histories = []
         
 
 config = Config()

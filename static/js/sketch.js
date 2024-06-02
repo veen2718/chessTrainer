@@ -53,6 +53,19 @@ function setup() {
     post('/shutdown')
   })
   
+
+  let backButton = createButton('Back')
+  backButton.position(squareSize * 9.5, squareSize * 8)
+  backButton.mousePressed(function(){
+    getReq('/back').then(data =>{
+      board=data
+      redraw()
+      console.log("\n\n\n\n")
+      console.table(board)
+      console.table(data)
+    })
+  })
+
 }
 
 function draw() {
