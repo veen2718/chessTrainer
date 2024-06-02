@@ -46,6 +46,12 @@ function setup() {
     console.table(board)
     console.log(board[0],"board[0]")
   })
+
+  let quitButton = createButton('Quit')
+  quitButton.position(squareSize * 9, squareSize * 8)
+  quitButton.mousePressed(function(){
+    post('/shutdown')
+  })
   
 }
 
@@ -117,15 +123,18 @@ async function getReq(path){
 }
 
 function mouseClicked(){
-  post('/click_at',[mouseX,mouseY],true).then(data =>{
-    allData = data
-    legalMoves = allData[0]
-    board = allData[1]
-    console.log("legalMoves:",legalMoves)
-    console.table(legalMoves)
-    console.log("board")
-    console.table(board)
-  })
+  if(mouseX <= 8*squareSize && mouseY <= 8*squareSize){
+    post('/click_at',[mouseX,mouseY],true).then(data =>{
+      allData = data
+      legalMoves = allData[0]
+      board = allData[1]
+      console.log("legalMoves:",legalMoves)
+      console.table(legalMoves)
+      console.log("board")
+      console.table(board)
+    })
+  }
+  
   
 }
 

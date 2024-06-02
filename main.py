@@ -7,12 +7,14 @@ from threading import Timer
 
 
 
+
 board = chess.Board()
 legalMovesSquares = []
 legalMoves = []
 selectedPiece = None
 squareSize = 1 
 opened = False
+history = []
 
 def open_browser(link='http://127.0.0.1:5000/'):
     global opened
@@ -114,7 +116,22 @@ def setup():
     print(f"Squaresize: {squareSize}")
     print('setup finished')
     
+
+    pid = os.getpid()
+    with open("server.pid", "w") as f:
+        f.write(str(pid))
+    print(f"Starting server with PID {pid}")
+    app.run()
+
+
     return '', 204
+
+@app.route('/shutdown',methods=['POST'])
+def shutdown():
+
+    print(history)
+    os._exit(0)
+
 
 @app.route('/click_at', methods=['POST'])
 def click_at():
@@ -123,6 +140,7 @@ def click_at():
     global legalMovesSquares
     global selectedPiece
     global board
+    global history
 
     pieceXY = request.json
     pieceX = pieceXY[0]
@@ -150,13 +168,14 @@ def click_at():
         print(f'selected piece at {selectedPiece}')
         return jsonify(legalMoves2,getBoardAsArray())
         
-    elif square in legalMovesSquares or move in legalMovesSquares:
+    elif square in legalMovesSquares or move in legalMovesSquares: #one of the possible moves has been selected. A move will be made
         os.system('clear')
         print("square in legal moves")
         uci_move = selectedPiece + square
         move = chess.Move.from_uci(uci_move)
         #print(move)
         board.push(move)
+        history.append([selectedPiece,square])
         print(f'moved from {selectedPiece} to {square}')
         legalMovesSquares = []
         return jsonify([], getBoardAsArray()) 
