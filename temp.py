@@ -1,6 +1,5 @@
-colors = ["w","b"]
-pieces = ["b","k","n","p","q","r"]
+import json
 
-for col in colors:
-    for piece in pieces:
-        print(f"{col}{piece} = loadImage(/static/assets/{col}{piece}.png)")
+with open('eco.json', 'r+') as ecojson:
+    x1 = json.load(ecojson)
+    json.dump(x1,ecojson,indent=2)

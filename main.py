@@ -4,7 +4,6 @@ import webbrowser
 from threading import Timer
 
 from initialize import config as cf
-
 from app import app
 
 

@@ -35,13 +35,26 @@ def setup():
     cf.squareSize = data[0]
     print(f"Squaresize: {cf.squareSize}")
     print('setup finished')
-    
 
+    
     
     app.run()
 
 
     return '', 204
+
+
+@app.route('/setupMoves')
+def setupMoves():
+    for setupMove in cf.setupMoves:
+        move = chess.Move.from_uci(setupMove[0]+setupMove[1])
+    
+        cf.board.push(move)
+        cf.history.append([setupMove[0],setupMove[1]])
+        print(f'moved from {setupMove[0]} to {setupMove[1]}')
+        
+    return jsonify(getBoardAsArray()) 
+
 
 @app.route('/shutdown',methods=['POST'])
 def shutdown():

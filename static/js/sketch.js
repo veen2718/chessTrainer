@@ -41,7 +41,7 @@ function setup() {
   i = 0
   console.log(i, "i")
   post('/setup',[squareSize])
-  getReq('/getBoard').then(data => {
+  getReq('/setupMoves').then(data => {
     board=data
     console.table(board)
     console.log(board[0],"board[0]")

@@ -2,3 +2,4 @@ chessEnv/
 /.vscode
 temp.py
 eco.json
+__pycache__
