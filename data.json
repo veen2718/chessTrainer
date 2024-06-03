@@ -1,7 +1,50 @@
 {
-    "Sicilian Defense: Hyperaccelerated Dragon":{
-        "setup":[["e2", "e4"], ["c7", "c5"],["g1","f3"],["g7","g6"]],
-        "data":[]
-
+  "Sicilian Defense: Hyperaccelerated Dragon": {
+    "setup": [
+      [
+        "e2",
+        "e4"
+      ],
+      [
+        "c7",
+        "c5"
+      ],
+      [
+        "g1",
+        "f3"
+      ],
+      [
+        "g7",
+        "g6"
+      ]
+    ],
+    "data": {
+      "root": []
     }
+  },
+  "data": {
+    "root": [
+      {
+        "b2b3": [
+          {
+            "f8g7": [
+              {
+                "b1c3": []
+              },
+              {
+                "d2d4": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "b1c3": [
+          {
+            "f8g7": []
+          }
+        ]
+      }
+    ]
+  }
 }
