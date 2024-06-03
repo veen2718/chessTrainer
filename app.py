@@ -4,6 +4,7 @@ import os
 
 from initialize import config as cf
 from chessfiles import *
+from node import *
 
 app = Flask(__name__)
 
@@ -59,7 +60,13 @@ def setupMoves():
 @app.route('/shutdown',methods=['POST'])
 def shutdown():
     cf.histories.append(cf.history)
-    print(cf.histories)
+    #print(cf.histories)
+    historyTree = cf.historyTree.getOrigin().toDict()
+    print(json.dumps(historyTree,indent=4))
+    cf.allData['data'] = historyTree
+    with open('data.json', 'w') as dataJson:
+        json.dump(cf.allData, dataJson,indent=2)
+    displayTree(cf.historyTree)
     os._exit(0)
 
 
@@ -70,11 +77,13 @@ def back():
     cf.board = chess.Board()
     for move in cf.history:
         cf.board.push(chess.Move.from_uci(move[0]+move[1]))
+    cf.historyTree = cf.historyTree.parent
     print('moved back 1')
     x = getBoardAsArray()
     for i in x:
         print(i)
     print(cf.board)
+    displayTree(cf.historyTree)
     return jsonify(getBoardAsArray(cf.board))
 
 
@@ -106,7 +115,7 @@ def click_at():
         print(cf.legalMovesSquares,"cf.legalMovesSquares")
         cf.selectedPiece = square
         print(f'selected piece at {cf.selectedPiece}')
-        return jsonify(legalMoves2,getBoardAsArray())
+        return jsonify(legalMoves2,getBoardAsArray(cf.board))
         
     elif square in cf.legalMovesSquares or move in cf.legalMovesSquares: #one of the possible moves has been selected. A move will be made
         os.system('clear')
@@ -116,8 +125,13 @@ def click_at():
         #print(move)
         cf.board.push(move)
         cf.history.append([cf.selectedPiece,square])
+
+        
+        cf.historyTree = cf.historyTree.addChild(uci_move)
+        displayTree(cf.historyTree.getOrigin())
+
         print(f'moved from {cf.selectedPiece} to {square}')
         cf.legalMovesSquares = []
-        return jsonify([], getBoardAsArray()) 
+        return jsonify([], getBoardAsArray(cf.board)) 
     else:
         print("something went wrong")
